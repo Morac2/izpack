@@ -255,6 +255,10 @@ public class UserInputPanel extends IzPanel implements ActionListener, ItemListe
     private static final String FAMILY = "family";
 
     private static final String MULTIPLE_FILE_FIELD = "multiFile";
+    
+    // attribute suffix
+    
+    private static final String IS_PASSWORD = "_is_password";
 
     // ------------------------------------------------------------------------
     // Variable Declarations
@@ -317,6 +321,8 @@ public class UserInputPanel extends IzPanel implements ActionListener, ItemListe
     private boolean validating = true;
 
     private boolean eventsActivated = false;
+    
+    private boolean savePasswords = false;
 
     private Vector<UIElement> elements = new Vector<UIElement>();
 
@@ -1107,9 +1113,18 @@ public class UserInputPanel extends IzPanel implements ActionListener, ItemListe
             entryMap.put(key, idata.getVariable(key));
         }
 
-        new UserInputPanelAutomationHelper(entryMap).makeXMLData(idata, panelRoot);
+        new UserInputPanelAutomationHelper(entryMap, savePasswords).makeXMLData(idata, panelRoot);
     }
 
+    /*--------------------------------------------------------------------------*/
+    /**
+     * Sets flag to save passwords when XML data for automated installation is created.
+     */
+    /*--------------------------------------------------------------------------*/
+    public void setSavePasswords(boolean savePasswords) {
+        this.savePasswords = savePasswords;
+    }
+    
     /*--------------------------------------------------------------------------*/
     /**
      * Builds the UI and makes it ready for display
@@ -2481,6 +2496,7 @@ public class UserInputPanel extends IzPanel implements ActionListener, ItemListe
         if (success)
         {
             idata.setVariable(variable, group.getPassword());
+            idata.setAttribute(variable + IS_PASSWORD, true);
             entries.add(new TextValuePair(variable, group.getPassword()));
         }
         return success;

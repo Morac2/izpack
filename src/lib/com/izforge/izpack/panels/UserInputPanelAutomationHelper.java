@@ -57,9 +57,16 @@ public class UserInputPanelAutomationHelper implements PanelAutomation
     private static final String AUTO_ATTRIBUTE_VALUE = "value";
 
     // ------------------------------------------------------
+    // attribute suffix
+    // ------------------------------------------------------
+    private static final String IS_PASSWORD = "_is_password";
+    
+    // ------------------------------------------------------
     // String-String key-value pairs
     // ------------------------------------------------------
     private Map<String, String> entries;
+
+    private boolean savePasswords;
 
     /**
      * Default constructor, used during automated installation.
@@ -67,14 +74,27 @@ public class UserInputPanelAutomationHelper implements PanelAutomation
     public UserInputPanelAutomationHelper()
     {
         this.entries = null;
+        this.savePasswords = false;
+    }
+
+    /**
+     * Default constructor, used during automated installation.
+     * @param entryMap 
+     */
+    public UserInputPanelAutomationHelper(Map<String, String> entryMap)
+    {
+        this.entries = null;
+        this.savePasswords = false;
     }
 
     /**
      * @param entries String-String key-value pairs representing the state of the Panel
+     * @param savePasswords Whether passwords should be saved or not 
      */
-    public UserInputPanelAutomationHelper(Map<String, String> entries)
+    public UserInputPanelAutomationHelper(Map<String, String> entries, boolean savePasswords)
     {
         this.entries = entries;
+        this.savePasswords = savePasswords;
     }
 
     /**
@@ -104,7 +124,11 @@ public class UserInputPanelAutomationHelper implements PanelAutomation
             String value = this.entries.get(key);
             dataElement = new XMLElementImpl(AUTO_KEY_ENTRY,userInput);
             dataElement.setAttribute(AUTO_ATTRIBUTE_KEY, key);
-            dataElement.setAttribute(AUTO_ATTRIBUTE_VALUE, value);
+            Object isPassword = idata.getAttribute(key + IS_PASSWORD);
+            if ((!savePasswords && isPassword instanceof Boolean && ((Boolean) isPassword)))
+                dataElement.setAttribute(AUTO_ATTRIBUTE_VALUE, "${" + key + "}");
+            else
+                dataElement.setAttribute(AUTO_ATTRIBUTE_VALUE, value);
 
             userInput.addChild(dataElement);
         }

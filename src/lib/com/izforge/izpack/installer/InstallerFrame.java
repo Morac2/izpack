@@ -35,12 +35,14 @@ import com.izforge.izpack.adaptator.impl.XMLWriter;
 import com.izforge.izpack.gui.ButtonFactory;
 import com.izforge.izpack.gui.EtchedLineBorder;
 import com.izforge.izpack.gui.IconsDatabase;
+import com.izforge.izpack.panels.UserInputPanel;
 import com.izforge.izpack.rules.RulesEngine;
 import com.izforge.izpack.util.*;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.JTextComponent;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -1228,15 +1230,18 @@ public class InstallerFrame extends JFrame {
      *
      * @param root The XML tree to write out.
      * @param out  The stream to write on.
+     * @param savePasswords Whether passwords should be exported or not
      *
      * @throws Exception Description of the Exception
      */
-    public void writeXMLTree(IXMLElement root, OutputStream out) throws Exception {
+    public void writeXMLTree(IXMLElement root, OutputStream out, boolean savePasswords) throws Exception {
         IXMLWriter writer = new XMLWriter(out);
         // fix bug# 4551
         // write.write(root);
         for (int i = 0; i < installdata.panels.size(); i++) {
             IzPanel panel = installdata.panels.get(i);
+            if (panel instanceof UserInputPanel)
+                ((UserInputPanel) panel).setSavePasswords(savePasswords);
             panel.makeXMLData(installdata.xmlData.getChildAtIndex(i));
         }
         writer.write(root);

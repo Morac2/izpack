@@ -417,7 +417,7 @@ public class RulesEngine implements Serializable
         }
         else
         {
-            Debug.trace("Checking condition");
+            Debug.trace("Checking condition " + id);
             if (cond.getInstalldata() == null)
             {
                 cond.setInstalldata(installdata);
@@ -443,7 +443,7 @@ public class RulesEngine implements Serializable
         }
         else
         {
-            Debug.trace("Checking condition");
+            Debug.trace("Checking condition " + cond);
             return cond.isTrue();
         }
     }

@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -39,7 +40,6 @@ import com.izforge.izpack.gui.LabelFactory;
 import com.izforge.izpack.installer.InstallData;
 import com.izforge.izpack.installer.InstallerFrame;
 import com.izforge.izpack.installer.IzPanel;
-import com.izforge.izpack.installer.IzPanel.Filler;
 import com.izforge.izpack.util.Log;
 import com.izforge.izpack.util.VariableSubstitutor;
 
@@ -57,6 +57,11 @@ public class FinishPanel extends IzPanel implements ActionListener
      * The automated installers generation button.
      */
     protected JButton autoButton;
+    
+    /**
+     * Checkbox to indicate whether to save passwords or not
+     */
+    protected JCheckBox savePasswordsCb;
 
     /**
      * The variables substitutor.
@@ -115,7 +120,6 @@ public class FinishPanel extends IzPanel implements ActionListener
             
             add(jLabel, constraints);
             
-            
             if (idata.uninstallOutJar != null)
             {
                 // We prepare a message for the uninstaller feature
@@ -134,6 +138,11 @@ public class FinishPanel extends IzPanel implements ActionListener
                         LEADING), constraints);
             }
 
+            // Add the checkbox
+            constraints.insets = new Insets(30,0,0,0);  //top padding
+            savePasswordsCb = new JCheckBox("Save Passwords");
+            add(savePasswordsCb, constraints);
+            
             // We add the autoButton
             autoButton = ButtonFactory.createButton(parent.langpack.getString("FinishPanel.auto"),
                     parent.icons.getImageIcon("edit"), idata.buttonsHColor);
@@ -141,7 +150,7 @@ public class FinishPanel extends IzPanel implements ActionListener
             autoButton.addActionListener(this);
             
             constraints.weighty = 1.0;   //request any extra vertical space
-            constraints.insets = new Insets(40,0,0,0);  //top padding
+            constraints.insets = new Insets(10,0,0,0);  //top padding
             constraints.gridx = 0;
             add(autoButton, constraints);
  
@@ -179,7 +188,7 @@ public class FinishPanel extends IzPanel implements ActionListener
                 File file = fc.getSelectedFile();
                 FileOutputStream out = new FileOutputStream(file);
                 BufferedOutputStream outBuff = new BufferedOutputStream(out, 5120);
-                parent.writeXMLTree(idata.xmlData, outBuff);
+                parent.writeXMLTree(idata.xmlData, outBuff, savePasswordsCb.isSelected());
                 outBuff.flush();
                 outBuff.close();
 

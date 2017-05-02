@@ -133,7 +133,7 @@ public class ProcessPanelWorker implements Runnable
             String conditionid = job_el.hasAttribute("condition") ? job_el.getAttribute("condition") : job_el.hasAttribute("conditionid") ? job_el.getAttribute("conditionid") : null;
             if ((conditionid != null) && (conditionid.length() > 0))
             {
-                Debug.trace("Condition for job.");
+                Debug.trace("Condition for job: " + conditionid);
                 Condition cond = RulesEngine.getCondition(conditionid);
                 if ((cond != null) && !cond.isTrue())
                 {
